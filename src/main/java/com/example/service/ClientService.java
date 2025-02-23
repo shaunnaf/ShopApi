@@ -57,7 +57,7 @@ public class ClientService {
     public List<ClientDto> getClientByNameAndSurname(String name, String surname) {
         List<ClientModel> clientModels = clientRepository.findByClientNameAndClientSurname(name, surname);
         return clientModels.stream()
-                .map(clientModel -> clientMapper.toDto(clientModel))
+                .map(clientMapper::toDto)
                 .collect(Collectors.toList());
     }
 

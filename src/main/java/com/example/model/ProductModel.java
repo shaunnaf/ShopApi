@@ -26,13 +26,11 @@ public class ProductModel {
     private LocalDate lastUpdateDate;
 
 
-    @OneToOne
-    @JoinColumn(name = "image_id", nullable = false) // Внешний ключ
-    private ImageModel image;
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "image_id", referencedColumnName = "id", nullable = true)
+    private ImageModel image; // Может быть null
 
-    @ManyToOne
-    @JoinColumn(name = "supplier_id", nullable = false) // Внешний ключ
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "supplier_id", nullable = false)
     private SupplierModel supplier;
-
-
 }

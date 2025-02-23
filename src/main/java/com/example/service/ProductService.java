@@ -2,10 +2,11 @@ package com.example.service;
 
 import com.example.dto.ProductDto;
 import com.example.mapper.ProductMapper;
+import com.example.model.ImageModel;
 import com.example.model.ProductModel;
+import com.example.repository.ImageRepository;
 import com.example.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 public class ProductService {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+    private final ImageRepository imageRepository;
 
     public List<ProductDto> getAllProduct() {
         List<ProductModel> productModels = productRepository.findAll();
@@ -39,7 +41,20 @@ public class ProductService {
         return productMapper.toDto(productModel);
     }
 
-    public ProductDto addProduct(ProductDto productDto) {
-        return productMapper.toDto(productRepository.save(productMapper.toEntity(productDto)));
+    public ProductModel addProduct(ProductModel productModel) {
+        productModel.setImage(null);
+        return productRepository.save(productModel);
     }
+
+    public ProductModel updateProductImage(UUID productId, UUID imageId) {
+        ProductModel product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        ImageModel image = imageRepository.findById(imageId)
+                .orElseThrow(() -> new RuntimeException("Image not found"));
+
+        product.setImage(image);
+        return productRepository.save(product);
+    }
+
 }

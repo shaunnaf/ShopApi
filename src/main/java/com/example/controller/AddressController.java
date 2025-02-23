@@ -1,9 +1,6 @@
 package com.example.controller;
 
 import com.example.dto.AddressDto;
-import com.example.mapper.AddressMapper;
-import com.example.model.AddressModel;
-import com.example.repository.AddressRepository;
 import com.example.service.AddressService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

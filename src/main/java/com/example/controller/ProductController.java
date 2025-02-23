@@ -2,10 +2,8 @@ package com.example.controller;
 
 import com.example.dto.ProductDto;
 import com.example.mapper.ProductMapper;
-import com.example.model.ImageModel;
 import com.example.model.ProductModel;
 import com.example.model.SupplierModel;
-import com.example.repository.ImageRepository;
 import com.example.repository.SupplierRepository;
 import com.example.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +19,6 @@ import java.util.UUID;
 public class ProductController {
     private final ProductService productService;
     private final SupplierRepository supplierRepository;
-    private final ImageRepository imageRepository;
     private final ProductMapper productMapper;
 
     @GetMapping("getProductById/{id}")
@@ -40,23 +37,26 @@ public class ProductController {
 
         SupplierModel supplier = supplierRepository.findById(productDto.getSupplierId())
                 .orElseThrow(() -> new RuntimeException("Supplier not found"));
-
-        ImageModel image = imageRepository.findById(productDto.getImageId())
-                .orElseThrow(() -> new RuntimeException("Image not found"));
-
-        productModel.setImage(image);
         productModel.setSupplier(supplier);
-        
-        return ResponseEntity.ok(productService.addProduct(productMapper.toDto(productModel)));
+
+        ProductModel savedProduct = productService.addProduct(productModel);
+        return ResponseEntity.ok(productMapper.toDto(savedProduct));
     }
 
-    @DeleteMapping("deleteProduct/{id}")
-    public void deleteProduct(@PathVariable UUID id) {
-        productService.deleteProduct(id);
+    @PutMapping("updateProductImage/{productId}")
+    public ResponseEntity<ProductDto> updateProductImage(@PathVariable UUID productId, @RequestParam UUID imageId) {
+        ProductModel updatedProduct = productService.updateProductImage(productId, imageId);
+        return ResponseEntity.ok(productMapper.toDto(updatedProduct));
     }
+
 
     @PatchMapping("decrementAvailableStock/{id}/{count}")
     public ResponseEntity<ProductDto> decrementProduct(@PathVariable UUID id, @PathVariable int count) {
         return ResponseEntity.ok(productService.decrementAvailableStock(id, count));
+    }
+
+    @DeleteMapping("deleteProductById/{id}")
+    public void deleteProductById(@PathVariable UUID id) {
+        productService.deleteProduct(id);
     }
 }

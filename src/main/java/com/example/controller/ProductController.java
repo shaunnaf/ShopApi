@@ -1,18 +1,14 @@
 package com.example.controller;
 
 import com.example.dto.ProductDto;
-import com.example.mapper.ProductMapper;
-import com.example.model.ProductModel;
-import com.example.model.SupplierModel;
-import com.example.repository.SupplierRepository;
 import com.example.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.security.auth.Subject;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,8 +18,6 @@ import java.util.UUID;
 @Tag(name = "Продукты", description = "Api для работы с продуктами")
 public class ProductController {
     private final ProductService productService;
-    private final SupplierRepository supplierRepository;
-    private final ProductMapper productMapper;
 
     @GetMapping("getProductById/{id}")
     @Operation(summary = "Посмотреть продукт по id")
@@ -40,21 +34,7 @@ public class ProductController {
     @PostMapping("addProduct")
     @Operation(summary = "Добавить новый продукт")
     public ResponseEntity<ProductDto> addProduct(@RequestBody ProductDto productDto) {
-        ProductModel productModel = productMapper.toEntity(productDto);
-
-        SupplierModel supplier = supplierRepository.findById(productDto.getSupplierId())
-                .orElseThrow(() -> new RuntimeException("Supplier not found"));
-        productModel.setSupplier(supplier);
-
-        ProductModel savedProduct = productService.addProduct(productModel);
-        return ResponseEntity.ok(productMapper.toDto(savedProduct));
-    }
-
-    @PutMapping("updateProductImage/{productId}")
-    @Operation(summary = "Обновить информацию об изображении продукта")
-    public ResponseEntity<ProductDto> updateProductImage(@PathVariable UUID productId, @RequestParam UUID imageId) {
-        ProductModel updatedProduct = productService.updateProductImage(productId, imageId);
-        return ResponseEntity.ok(productMapper.toDto(updatedProduct));
+        return ResponseEntity.status(HttpStatus.CREATED).body(productService.addProduct(productDto));
     }
 
 

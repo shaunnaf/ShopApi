@@ -1,4 +1,9 @@
 spring:
+  servlet:
+    multipart:
+      enabled: true  # Включает поддержку multipart/form-data
+      max-file-size: 5MB  # Максимальный размер одного файла
+      max-request-size: 10MB  # Максимальный размер всего запроса
   datasource:
     url: jdbc:postgresql://localhost:5432/shop_bd2
     username: postgres

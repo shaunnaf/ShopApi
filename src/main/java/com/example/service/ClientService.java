@@ -40,11 +40,10 @@ public class ClientService {
     public ClientDto saveClient(ClientDto clientDto) {
         ClientModel clientModel = clientMapper.toEntity(clientDto);
 
-        // Загружаем AddressModel по UUID
         AddressModel addressModel = addressRepository.findById(clientDto.getAddressId())
                 .orElseThrow(() -> new RuntimeException("Address not found"));
 
-        clientModel.setAddress(addressModel); // Устанавливаем связь
+        clientModel.setAddress(addressModel);
         clientModel = clientRepository.save(clientModel);
 
         return clientMapper.toDto(clientModel);

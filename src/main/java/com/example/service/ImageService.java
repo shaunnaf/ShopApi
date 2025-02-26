@@ -15,26 +15,16 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class ImageService {
-   /* private final ImageRepository imageRepository;
+    private final ImageRepository imageRepository;
     private final ImageMapper imageMapper;
 
     public ImageDto addImage(UUID productId, MultipartFile file) throws IOException {
         ImageModel imageModel = new ImageModel();
         imageModel.setImage(file.getBytes());
+        imageModel.setId(productId);
 
-        ImageModel savedImage = imageRepository.save(imageModel);
-        return imageMapper.toDto(savedImage);
-    }
-
-    public ImageDto updateImage(UUID imageId, MultipartFile file) throws IOException {
-        Optional<ImageModel> optionalImage = imageRepository.findById(imageId);
-        if (optionalImage.isPresent()) {
-            ImageModel imageModel = optionalImage.get();
-            imageModel.setImage(file.getBytes());
-            ImageModel updatedImage = imageRepository.save(imageModel);
-            return imageMapper.toDto(updatedImage);
-        }
-        throw new RuntimeException("Image not found");
+        imageModel = imageRepository.save(imageModel);
+        return imageMapper.toDto(imageModel);
     }
 
     public void deleteImageById(UUID id) {
@@ -43,12 +33,4 @@ public class ImageService {
         }
         imageRepository.deleteById(id);
     }
-
-    public ImageDto getImageById(UUID imageId) {
-        ImageModel imageModel = imageRepository.findById(imageId)
-                .orElseThrow(() -> new RuntimeException("Image not found"));
-        return imageMapper.toDto(imageModel);
-    }
-
-    */
 }

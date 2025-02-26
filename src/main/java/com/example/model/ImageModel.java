@@ -17,10 +17,10 @@ import java.util.UUID;
 @NoArgsConstructor
 public class ImageModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     @Lob
-    @Column(columnDefinition = "BYTEA")
+    @Column(columnDefinition = "bytea", nullable = true)
     private byte[] image;
 }
+

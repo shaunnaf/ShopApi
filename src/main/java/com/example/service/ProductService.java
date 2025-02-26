@@ -4,8 +4,10 @@ import com.example.dto.ProductDto;
 import com.example.mapper.ProductMapper;
 import com.example.model.ImageModel;
 import com.example.model.ProductModel;
+import com.example.model.SupplierModel;
 import com.example.repository.ImageRepository;
 import com.example.repository.ProductRepository;
+import com.example.repository.SupplierRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
     private final ImageRepository imageRepository;
+    private final SupplierRepository supplierRepository;
 
     public List<ProductDto> getAllProduct() {
         List<ProductModel> productModels = productRepository.findAll();
@@ -41,20 +44,19 @@ public class ProductService {
         return productMapper.toDto(productModel);
     }
 
-    public ProductModel addProduct(ProductModel productModel) {
-        productModel.setImage(null);
-        return productRepository.save(productModel);
+    public ProductDto addProduct(ProductDto productDto) {
+        ProductModel productModel = productMapper.toEntity(productDto);
+
+        SupplierModel supplier = supplierRepository.findById(productDto.getSupplierId())
+                .orElseThrow(() -> new RuntimeException("Supplier not found"));
+        productModel.setSupplier(supplier);
+
+        UUID generatedImageId = UUID.randomUUID();
+        productModel.setImageId(generatedImageId);
+
+        productModel = productRepository.save(productModel);
+        return productMapper.toDto(productModel);
     }
 
-    public ProductModel updateProductImage(UUID productId, UUID imageId) {
-        ProductModel product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
-
-        ImageModel image = imageRepository.findById(imageId)
-                .orElseThrow(() -> new RuntimeException("Image not found"));
-
-        product.setImage(image);
-        return productRepository.save(product);
-    }
 
 }

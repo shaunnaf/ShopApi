@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -19,18 +20,18 @@ public class ProductModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
+
     private String name;
     private String category;
     private double price;
     private int availableStock;
     private LocalDate lastUpdateDate;
 
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "image_id", referencedColumnName = "id", nullable = true)
-    private ImageModel image; // Может быть null
+    @Column(name = "image_id", unique = true, nullable = false)
+    private UUID imageId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "supplier_id", nullable = false)
     private SupplierModel supplier;
 }
+
